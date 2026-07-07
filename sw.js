@@ -1,39 +1,39 @@
-const CACHE_NAME = 'tokoku-v2.4';
+const CACHE_NAME = 'tempelegend-v1';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4',
+  'https://cdn.jsdelivr.net/npm/vuetify@3.5.2/dist/vuetify.min.css',
+  'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css',
   'https://unpkg.com/vue@3/dist/vue.global.js',
-  'https://unpkg.com/dexie@4.0.1/dist/dexie.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+  'https://cdn.jsdelivr.net/npm/vuetify@3.5.2/dist/vuetify.min.js',
+  'https://unpkg.com/dexie@latest/dist/dexie.js'
 ];
 
-self.addEventListener('install', (e) => {
+// Install Service Worker & Simpan ke Cache
+self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 
-self.addEventListener('activate', (e) => {
+// Aktifkan & Hapus Cache Lama jika ada update
+self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => { if(key !== CACHE_NAME) return caches.delete(key); })
+    ))
   );
 });
 
-self.addEventListener('fetch', (e) => {
+// Ambil data dari Cache jika offline
+self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request)
-      .then((response) => {
-        // Jika ada di cache, kembalikan
-        if (response) return response;
-
+    caches.match(e.request).then(cachedResponse => {
+      return cachedResponse || fetch(e.request);
+    })
+  );
+});
         // Jika tidak, fetch dari network dan cache dinamis
         return fetch(e.request).then((res) => {
           // Hanya cache response yang valid
