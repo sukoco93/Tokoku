@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tempelegend-v1';
+const CACHE_NAME = 'tokoku-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -10,28 +10,47 @@ const ASSETS = [
   'https://unpkg.com/dexie@latest/dist/dexie.js'
 ];
 
-// Install Service Worker & Simpan ke Cache
+// Install Service Worker
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting())
   );
 });
 
-// Aktifkan & Hapus Cache Lama jika ada update
+// Aktifkan & Bersihkan Cache Lama
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys => Promise.all(
       keys.map(key => { if(key !== CACHE_NAME) return caches.delete(key); })
-    ))
+    )).then(() => self.clients.claim())
   );
 });
 
-// Ambil data dari Cache jika offline
+// Strategi Network First, Fallback to Cache (Biar aman dan tidak nge-bug teks mentah lagi)
 self.addEventListener('fetch', e => {
+  // Hanya tangani request HTTP/HTTPS (hindari chrome-extension atau content://)
+  if (!e.request.url.startsWith('http')) return;
+
   e.respondWith(
-    caches.match(e.request).then(cachedResponse => {
-      return cachedResponse || fetch(e.request);
-    })
+    fetch(e.request)
+      .then(response => {
+        // Jika internet aman, klon hasilnya ke cache
+        if (response.status === 200) {
+          const resClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
+        }
+        return response;
+      })
+      .catch(() => {
+        // Jika offline, ambil dari cache
+        return caches.match(e.request).then(cachedResponse => {
+          if (cachedResponse) return cachedResponse;
+          // Jika mendarat di root path saat offline
+          if (e.request.mode === 'navigate') return caches.match('./index.html');
+        });
+      })
   );
 });
         // Jika tidak, fetch dari network dan cache dinamis
