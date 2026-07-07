@@ -1,6 +1,6 @@
 {
-  "name": "Catatan Toko v2.4",
-  "short_name": "TokoKu",
+  "name": "tempe legend",
+  "short_name": "tempe",
   "description": "Aplikasi kasir dan manajemen stok ringan",
   "start_url": "./index.html",
   "display": "standalone",
