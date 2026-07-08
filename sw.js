@@ -10,6 +10,14 @@ const ASSETS = [
   'https://unpkg.com/vue@3/dist/vue.global.js',
   'https://cdn.jsdelivr.net/npm/vuetify@3.5.2/dist/vuetify.min.js',
   'https://unpkg.com/dexie@latest/dist/dexie.js'
+  'https://fonts.googleapis.com'
+  'https://fonts.gstatic.com" crossorigin>
+  'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet'
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+  'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js'
+  'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js'
+  'https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js'
+  'https://unpkg.com/dexie@4.0.8/dist/dexie.js'
 ];
 
 // Install Service Worker
