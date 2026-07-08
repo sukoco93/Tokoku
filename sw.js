@@ -3,6 +3,8 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './icon-152.png',
+  './icon-192.png',
   'https://cdn.jsdelivr.net/npm/vuetify@3.5.2/dist/vuetify.min.css',
   'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css',
   'https://unpkg.com/vue@3/dist/vue.global.js',
